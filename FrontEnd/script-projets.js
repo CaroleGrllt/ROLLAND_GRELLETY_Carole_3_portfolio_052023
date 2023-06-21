@@ -15,9 +15,9 @@ fetch("http://localhost:5678/api/categories")
             id: 0,
             name: 'Tous'
         })
-        let filtre = document.querySelector("#filters");
 
         data.forEach((theme) => {
+
             let filtre = document.querySelector("#filters");
             let filterButton = document.createElement("button");
             filterButton.textContent = theme.name;
@@ -314,6 +314,7 @@ let imgPreview = document.querySelector(".preview-projet");
 let nvlCateg = document.querySelector(".categorie-input");
 let nvTitle = document.querySelector(".title-input");
 let addBtn = document.querySelector(".add-btn");
+nvlCateg.value="1"
 
 // ********** Passer d'une popup à l'autre **********
 
@@ -375,10 +376,17 @@ function displayWork(event, file) { // permet de créer éléments pour afficher
 //*****//*****Changement couleur bouton quand formulaire rempli *****//*****//
 nvTitle.addEventListener('input', colorBtn);
 nvProjet.addEventListener('input', colorBtn)
+nvlCateg.addEventListener('input', colorBtn)
+
+
 function colorBtn() {
-    if(nvTitle.value != "" && imgPreview.firstChild) {
+    if(nvTitle.value != "" && imgPreview.firstChild && nvlCateg.value != "") {
         addBtn.classList.remove("not-allowed");
         addBtn.classList.add("allowed");
+    }
+    if (nvTitle.value === "" || !imgPreview.firstChild || nvlCateg.value === "") {
+        addBtn.classList.remove("allowed");
+        addBtn.classList.add("not-allowed");
     }
 }
 
@@ -394,13 +402,14 @@ function ajouterProjet(event) {
     let tailleImgMax = 4*1024*1024;
     let imgToSend = nvProjet.files[0];
 
-    if (nvTitle.value === "" || !imgPreview.firstChild || imgToSend.size > tailleImgMax) {
+    if (nvTitle.value === "" || !imgPreview.firstChild || imgToSend.size > tailleImgMax ) {
         errorMsg.textContent = "Tous les champs doivent être remplis. La taille du fichier est limitée à 4 Mo"
         successMsg.textContent = "";
         return
     }
-    
+
     colorBtn()
+
 
     //*****//***** Ajout du travail *****//*****//
 
@@ -436,6 +445,7 @@ function ajouterProjet(event) {
 }
 
 function clearAfterSent() {
+        nvlCateg.value = ""
         nvTitle.value = "";
         nvProjet.value="";
         document.querySelector(".generique-container").style.display = "flex";
@@ -452,6 +462,7 @@ function clearMessage() {
     document.querySelector('.failure').textContent="";
     document.querySelector('.success').textContent=""; 
 }
+
 
 
 

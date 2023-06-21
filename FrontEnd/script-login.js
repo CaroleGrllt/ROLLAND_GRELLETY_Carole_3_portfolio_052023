@@ -1,4 +1,14 @@
+let emailContainer = document.querySelector('#emailLogin')
+let passwordContainer = document.querySelector('#passwordLogin')
+let messageErreur = document.querySelector(".error-cnx");
+
 function connexion() {
+
+    if (emailContainer.value === "" || passwordContainer.value === "") {
+        messageErreur.textContent = "Les champs email et mot de passe sont requis"
+        return
+    }
+
     fetch('http://localhost:5678/api/users/login', {
         method: "POST",
         headers: {
@@ -27,9 +37,10 @@ function connexion() {
     })
     
     .catch(function(err){
-        let messageErreur = document.querySelector(".error-cnx");
         messageErreur.innerHTML = "Erreur dans l'identifiant ou le mot de passe"
     });
+
+    clearAfterSubmit()
 }
 
 let loginFormulaire = document.getElementById("submitLogin");
@@ -41,4 +52,9 @@ document.querySelectorAll('form').forEach(form => {
     }
     )
 })
+
+function clearAfterSubmit() {
+    emailContainer.value =""
+    passwordContainer.value =""
+}
 
