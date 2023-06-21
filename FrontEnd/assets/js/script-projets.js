@@ -10,6 +10,7 @@ fetch("http://localhost:5678/api/categories")
     })
 
     .then((data) => {
+        // console.log(data)
         data.unshift({ // création du bouton "tous". 
                        //Dans le tableau renvoyé, on insère un nouvel objet en 1er avec unshift
             id: 0,
@@ -80,25 +81,17 @@ fetch("http://localhost:5678/api/categories")
 let btns;
 let works;
 
-fetch("http://localhost:5678/api/works")
-    .then(function(res) {
-        if(res.ok) { //vérification requête bien passée
-            return res.json(); //récupération des données format json
+function displayProjects() {
+    fetch("http://localhost:5678/api/works")
+      .then(function(res) {
+        if(res.ok) {
+            return res.json();
         }
-    })
-
-    .then(function(value){//récupération d'une valeur intelligible !
-        // console.log(value); // vérification dans la console que j'ai bien tous mes objets dans mon tableau
+      })
+      .then(function(value) {
+        const galerie = document.querySelector(".gallery");
+  
         value.forEach((work) => {
-
-            let projets = work;
-
-
-            // ********** Création de la galerie homepage **********
-
-
-            let galerie = document.querySelector(".gallery"); // Sélection élément avec class = gallery
-            
             let container = document.createElement("figure"); // création des diverses balises
             let elementImage = document.createElement("img");
             let elementTexte = document.createElement("figcaption");
@@ -116,9 +109,28 @@ fetch("http://localhost:5678/api/works")
 
             galerie.appendChild(container); // on indique que sont les diverses balises par rapport à la .gallery
 
+        })
+      })
+      .catch(function(err){ 
+            alert('Erreur dans la création de la galerie. Veuillez réessayer');
+        });
+    }
+displayProjects()
 
-            // ********** Création de la galerie popup **********
+  
+function displayProjectsModal() {
+    fetch("http://localhost:5678/api/works")
+    .then(function(res) {
+        if(res.ok) { //vérification requête bien passée
+            return res.json(); //récupération des données format json
+        }
+    })
 
+    .then(function(value){//récupération d'une valeur intelligible !
+        // console.log(value); // vérification dans la console que j'ai bien tous mes objets dans mon tableau
+        value.forEach((work) => {
+
+            let projets = work;
 
             let galeriePopup = document.querySelector(".gallery-popup"); 
             let containerPopup = document.createElement("figure");
@@ -146,11 +158,12 @@ fetch("http://localhost:5678/api/works")
 
 
 
-            // *********************************************
-            // ********** Suppression des travaux **********
-            // *********************************************
+            //  *********************************************
+            //  ********** Suppression des travaux **********
+            //  *********************************************
 
 
+            
                 trash.addEventListener('click', (event) => deleteProjet(event));
 
                     const token = sessionStorage.getItem("token");
@@ -190,6 +203,7 @@ fetch("http://localhost:5678/api/works")
                             console.log(error)
                         });
                     }
+
         })
     })
 
@@ -198,9 +212,10 @@ fetch("http://localhost:5678/api/works")
     })
 
     .catch(function(err){ 
-        alert('Erreur dans la création de la galerie. Veuillez réessayer');
+        alert('Erreur dans la création de la galerie popup.');
     });
-
+}
+displayProjectsModal()
 
 
 // ******************************************************************************
@@ -374,24 +389,26 @@ function displayWork(event, file) { // permet de créer éléments pour afficher
 }
 
 //*****//*****Changement couleur bouton quand formulaire rempli *****//*****//
-nvTitle.addEventListener('input', colorBtn);
+nvTitle.addEventListener('input', colorBtn)
 nvProjet.addEventListener('input', colorBtn)
 nvlCateg.addEventListener('input', colorBtn)
 
 
 function colorBtn() {
+    if (!nvTitle.value || !imgPreview.firstChild || !nvlCateg.value) {
+        addBtn.classList.remove("allowed");
+        addBtn.classList.add("not-allowed");
+        return
+    }
+
     if(nvTitle.value != "" && imgPreview.firstChild && nvlCateg.value != "") {
         addBtn.classList.remove("not-allowed");
         addBtn.classList.add("allowed");
     }
-    if (nvTitle.value === "" || !imgPreview.firstChild || nvlCateg.value === "") {
-        addBtn.classList.remove("allowed");
-        addBtn.classList.add("not-allowed");
-    }
 }
 
 
-//*****//***** Création du message d'erreur *****//*****//
+//*****//***** Création du message d'erreur / ajout du projet *****//*****//
 
 addBtn.addEventListener("click", (event) => ajouterProjet(event))
 
@@ -409,9 +426,6 @@ function ajouterProjet(event) {
     }
 
     colorBtn()
-
-
-    //*****//***** Ajout du travail *****//*****//
 
     let formData = new FormData();
     formData.append("image", nvProjet.files[0]);
@@ -432,10 +446,16 @@ function ajouterProjet(event) {
         }
     })
     .then(function(data){
+        console.log(data)
         const successMsg = document.querySelector(".success");
         successMsg.textContent = 'Image ajoutée avec succès !';
+
+        document.querySelector('.gallery').innerHTML=""
+        document.querySelector('.gallery-popup').innerHTML=""
+
+        displayProjects()
+        displayProjectsModal()
         clearAfterSent();
-        
     })
 
     .catch(error => {
@@ -445,7 +465,7 @@ function ajouterProjet(event) {
 }
 
 function clearAfterSent() {
-        nvlCateg.value = ""
+        nvlCateg.value = "1"
         nvTitle.value = "";
         nvProjet.value="";
         document.querySelector(".generique-container").style.display = "flex";
