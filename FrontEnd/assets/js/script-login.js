@@ -3,7 +3,6 @@ let passwordContainer = document.querySelector('#passwordLogin')
 let messageErreur = document.querySelector(".error-cnx");
 
 function connexion() {
-
     if (emailContainer.value === "" || passwordContainer.value === "") {
         messageErreur.textContent = "Les champs email et mot de passe sont requis"
         return
@@ -29,10 +28,8 @@ function connexion() {
     })
 
     .then(function(data) {
-        // console.log(data);
             sessionStorage.setItem("token", data.token); 
-            //propriété sessionStorage valable pour la session de navigation en cours. 
-            // console.log(data.token);
+            sessionStorage.setItem("userId", data.userId); 
             window.location.replace("index.html");
     })
     
@@ -49,8 +46,7 @@ loginFormulaire.addEventListener("click", connexion);
 document.querySelectorAll('form').forEach(form => {
     form.addEventListener('submit', (event) => {
         event.preventDefault();
-    }
-    )
+    })
 })
 
 function clearAfterSubmit() {
@@ -58,3 +54,6 @@ function clearAfterSubmit() {
     passwordContainer.value =""
 }
 
+// *****************
+// ***** FIN JS ****
+// *****************

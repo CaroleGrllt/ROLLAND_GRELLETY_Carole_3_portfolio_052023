@@ -10,9 +10,7 @@ fetch("http://localhost:5678/api/categories")
     })
 
     .then((data) => {
-        // console.log(data)
-        data.unshift({ // création du bouton "tous". 
-                       //Dans le tableau renvoyé, on insère un nouvel objet en 1er avec unshift
+        data.unshift({ // création du bouton "tous". Dans le tableau renvoyé, on insère un nouvel objet en 1er avec unshift
             id: 0,
             name: 'Tous'
         })
@@ -42,15 +40,12 @@ fetch("http://localhost:5678/api/categories")
             })
         })
 
-        // console.log(works);
         btns.forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 e.preventDefault();
                 let filterBtn = e.target.dataset.id;
-                // console.log(filterBtn);
                 works.forEach((work) => {
                     let filterImg = work.dataset.id;
-                    // console.log(filterImg);
                     if(filterBtn == 0) {
                         work.style.display = "block"
                     } else {
@@ -65,18 +60,15 @@ fetch("http://localhost:5678/api/categories")
         })
     })
 
-    .catch(function(err){ // on retourne une erreur si pb avec fetch
+    .catch(function(err){ 
         alert('Erreur dans la création des filtres.');
     });
-
 
 
 
 // ******************************************************************************
 // ***************** Création des galeries (homepage et popup) ****************** 
 // ******************************************************************************
-
-
 
 let btns;
 let works;
@@ -88,48 +80,48 @@ function displayProjects() {
             return res.json();
         }
       })
+
       .then(function(value) {
         const galerie = document.querySelector(".gallery");
   
         value.forEach((work) => {
-            let container = document.createElement("figure"); // création des diverses balises
+            let container = document.createElement("figure"); 
             let elementImage = document.createElement("img");
             let elementTexte = document.createElement("figcaption");
 
-            elementImage.src = work.imageUrl; // dans la balise image, on met en source l'url de l'image actuellement présente dans la variable work
-            elementTexte.innerHTML = work.title; // idem pour la balise figcaption
+            elementImage.src = work.imageUrl; 
+            elementTexte.innerHTML = work.title; 
             container.setAttribute("data-id", work.categoryId);
             container.setAttribute("id", work.id);
             container.classList.add("projets");
             elementImage.classList.add("img-projets");
 
-            galerie.appendChild(container); // on indique que sont les diverses balises par rapport à la .gallery
+            galerie.appendChild(container);
             container.appendChild(elementImage);
             container.appendChild(elementTexte);
 
-            galerie.appendChild(container); // on indique que sont les diverses balises par rapport à la .gallery
-
+            galerie.appendChild(container);
         })
       })
+
       .catch(function(err){ 
             alert('Erreur dans la création de la galerie. Veuillez réessayer');
         });
     }
+
 displayProjects()
 
   
 function displayProjectsModal() {
     fetch("http://localhost:5678/api/works")
     .then(function(res) {
-        if(res.ok) { //vérification requête bien passée
-            return res.json(); //récupération des données format json
+        if(res.ok) { 
+            return res.json(); 
         }
     })
 
-    .then(function(value){//récupération d'une valeur intelligible !
-        // console.log(value); // vérification dans la console que j'ai bien tous mes objets dans mon tableau
+    .then(function(value){
         value.forEach((work) => {
-
             let projets = work;
 
             let galeriePopup = document.querySelector(".gallery-popup"); 
@@ -162,8 +154,6 @@ function displayProjectsModal() {
             //  ********** Suppression des travaux **********
             //  *********************************************
 
-
-            
                 trash.addEventListener('click', (event) => deleteProjet(event));
 
                     const token = sessionStorage.getItem("token");
@@ -173,10 +163,9 @@ function displayProjectsModal() {
                         let figure = event.target.closest('figure')
                         figure.remove();
 
-                        let figureId = figure.id; // récupération id de l'image supprimée
+                        let figureId = figure.id;
 
-                        let arrayGalerie = document.querySelectorAll('.gallery figure'); //on récupère dans un tableau toute la galerie principale
-                        // console.log(Object.values(arrayGalerie).filter(projet => projet.id === figureId))
+                        let arrayGalerie = document.querySelectorAll('.gallery figure'); 
                         let deleteWork = Object.values(arrayGalerie).filter(projet => projet.id === figureId)
                         deleteWork[0].remove();
                        
@@ -187,23 +176,10 @@ function displayProjectsModal() {
                                 "Authorization": `Bearer ${token}`
                             }
                         })
-                        .then(resp => {
-                            // console.log(resp);
-                            if (resp.ok) { // Vérifiez si la réponse est ok avant de l'analyser en JSON
-                                return resp.json();
-                            } else {
-                                throw new Error('La requête a échoué avec le statut ' + resp.status);
-                            }
-                        })
-
-                        .then(function(data) {
-                        })
 
                         .catch(function(error) {
-                            console.log(error)
                         });
                     }
-
         })
     })
 
@@ -215,13 +191,14 @@ function displayProjectsModal() {
         alert('Erreur dans la création de la galerie popup.');
     });
 }
+
 displayProjectsModal()
+
 
 
 // ******************************************************************************
 // *********** Modification du design de la homepage en mode édition ************ 
 // ******************************************************************************
-
 
 if(sessionStorage.token !== null) {
     let modeEdition = document.querySelectorAll(".mode-edition");
@@ -231,6 +208,7 @@ if(sessionStorage.token !== null) {
 
     document.querySelector(".filter-buttons").style.display = "none";
     document.querySelector(".projects-div").style.margin = "0 0 90px 0";
+
     function logout() {
         sessionStorage.clear();
         window.location.href = "index.html";
@@ -262,7 +240,6 @@ if (sessionStorage.token == null) {
 // ***************** Ouverture / fermeture de la popup au clic ****************** 
 // ******************************************************************************
 
-
 let modal = null;
 
 document.querySelector('.open').addEventListener('click', (e) =>{
@@ -272,14 +249,13 @@ document.querySelector('.open').addEventListener('click', (e) =>{
     modal = target;
     modal.addEventListener('click', closeModale);
     let closeBtn =  modal.querySelectorAll('.close');
+
     closeBtn.forEach((cross) => {
         cross.addEventListener('click', closeModale);
     })  
+
     modal.querySelector('.popup-container-delete').addEventListener('click', stopPropagation);
     modal.querySelector('.popup-container-add').addEventListener('click', stopPropagation);
-
-    //Arrête la propagation de la fonction closeModale au conteneur. 
-    //Si on clique dedans, la fonction ne fonctionne plus
 })
 
 const closeModale = function(e) {
@@ -289,6 +265,7 @@ const closeModale = function(e) {
     modal.style.display = "none";
     modal.removeEventListener('click', closeModale);
     let closeBtn = modal.querySelectorAll('.close');
+
     closeBtn.forEach((cross) => {
         cross.removeEventListener('click', closeModale);    
     })  
@@ -297,10 +274,10 @@ const closeModale = function(e) {
     let addPopup = document.querySelector('.popup-container-add');
     deletePopup.classList.remove('hide');
     addPopup.classList.add('hide');    
-        //permet de revenir sur la première popup en cas de fermeture des popup
     modal.querySelector('.popup-container-delete').removeEventListener('click', stopPropagation);
     modal.querySelector('.popup-container-add').removeEventListener('click', stopPropagation);
     modal = null;
+
     clearInputs()
 }
 
@@ -331,7 +308,9 @@ let nvTitle = document.querySelector(".title-input");
 let addBtn = document.querySelector(".add-btn");
 nvlCateg.value="1"
 
+
 // ********** Passer d'une popup à l'autre **********
+
 
 let deletePopup = document.querySelector('.popup-container-delete');
 let addPopup = document.querySelector('.popup-container-add');
@@ -354,26 +333,24 @@ backArrow.addEventListener('click', (e) => {
 
 // ********** Prévisualisation d'un fichier **********
 
+
 nvProjet.addEventListener('change', previewImg);
 
 function previewImg() {
 
-    //création d'une règle qui permet d'écarter tout autre type d'extension que celles souhaitées (jpeg/jpg et png (i : peu importe la casse)).
     let extension = /\.(jpe?g|png)$/i; 
 
-    if(this.files.length === 0 || !extension.test(this.files[0].name)) { //.test() renvoie booléen
-        //length = 0 ou 1, car pas attribut "multiple" à l'input. Donc 0 ou 1 élément.
-        return; // si 0 élément ou si extension pas bonne => retourne sans exécuter code.
+    if(this.files.length === 0 || !extension.test(this.files[0].name)) { 
+        return; 
     }
 
-    let file = this.files[0]; // je stocke mon objet
-    let fileRead = new FileReader(); //constructeur qui permet de créer un nouvel objet FileReader. 
-                                       //Permet de lire le contenu de fichiers
+    let file = this.files[0]; 
+    let fileRead = new FileReader();
     fileRead.readAsDataURL(file);
     fileRead.addEventListener('load', (event) => displayWork(event, file));
 }
 
-function displayWork(event, file) { // permet de créer éléments pour afficher l'image
+function displayWork(event, file) { 
     let previewWork = document.querySelector('.preview-projet');
     previewWork.style.display="flex"
     let addWork = document.querySelector('.generique-container')
@@ -388,11 +365,13 @@ function displayWork(event, file) { // permet de créer éléments pour afficher
     figureContainer.appendChild(figureContent);
 }
 
+
 //*****//*****Changement couleur bouton quand formulaire rempli *****//*****//
+
+
 nvTitle.addEventListener('input', colorBtn)
 nvProjet.addEventListener('input', colorBtn)
 nvlCateg.addEventListener('input', colorBtn)
-
 
 function colorBtn() {
     if (!nvTitle.value || !imgPreview.firstChild || !nvlCateg.value) {
@@ -409,6 +388,7 @@ function colorBtn() {
 
 
 //*****//***** Création du message d'erreur / ajout du projet *****//*****//
+
 
 addBtn.addEventListener("click", (event) => ajouterProjet(event))
 
@@ -440,13 +420,14 @@ function ajouterProjet(event) {
         },
         body: formData,
     })
+
     .then(response => {
         if (!response.ok) {
         throw new Error("Erreur de la requête");
         }
     })
+
     .then(function(data){
-        console.log(data)
         const successMsg = document.querySelector(".success");
         successMsg.textContent = 'Image ajoutée avec succès !';
 
@@ -483,7 +464,6 @@ function clearMessage() {
     document.querySelector('.success').textContent=""; 
 }
 
-
-
-
-
+// *****************
+// ***** FIN JS ****
+// *****************
