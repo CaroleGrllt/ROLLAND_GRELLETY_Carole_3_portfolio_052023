@@ -99,8 +99,6 @@ function displayProjects() {
             galerie.appendChild(container);
             container.appendChild(elementImage);
             container.appendChild(elementTexte);
-
-            galerie.appendChild(container);
         })
       })
 
@@ -154,32 +152,32 @@ function displayProjectsModal() {
             //  ********** Suppression des travaux **********
             //  *********************************************
 
-                trash.addEventListener('click', (event) => deleteProjet(event));
+            trash.addEventListener('click', (event) => deleteProjet(event));
 
-                    const token = sessionStorage.getItem("token");
-                    const idProject = projets.id;
+            const token = sessionStorage.getItem("token");
+            const idProject = projets.id;
 
-                    function deleteProjet(event) {
-                        let figure = event.target.closest('figure')
-                        figure.remove();
+            function deleteProjet(event) {
+                let figure = event.target.closest('figure')
+                figure.remove();
 
-                        let figureId = figure.id;
+                let figureId = figure.id;
 
-                        let arrayGalerie = document.querySelectorAll('.gallery figure'); 
-                        let deleteWork = Object.values(arrayGalerie).filter(projet => projet.id === figureId)
-                        deleteWork[0].remove();
-                       
-                        fetch(`http://localhost:5678/api/works/${idProject}`, {
-                            method: 'DELETE',
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`
-                            }
-                        })
-
-                        .catch(function(error) {
-                        });
+                let arrayGalerie = document.querySelectorAll('.gallery figure'); 
+                let deleteWork = Object.values(arrayGalerie).filter(projet => projet.id === figureId)
+                deleteWork[0].remove();
+                
+                fetch(`http://localhost:5678/api/works/${idProject}`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     }
+                })
+
+                .catch(function(error) {
+                });
+            }
         })
     })
 
